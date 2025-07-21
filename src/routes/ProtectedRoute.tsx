@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import { useSelector, UseSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Navigate, useLocation } from 'react-router-dom';
 import { RootState } from 'src/app/store';
 
 interface ProtectedRouteProps {
@@ -11,9 +11,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
 }: ProtectedRouteProps) => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const location = useLocation();
 
   if (!isLoggedIn) {
-    return <Navigate to={'/login'} replace />;
+    // Store the current location the user is trying to access
+    return <Navigate to={'/login'} replace state={{ from: location }} />;
   }
   return <>{children}</>;
 };
