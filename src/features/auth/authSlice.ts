@@ -3,8 +3,14 @@ import { loginAPI, fetchCurrentUserAPI } from '../../services/authAPI';
 
 interface User {
   id: string;
-  name: string;
+  firstname: string;
+  surname: string;
   email: string;
+  role: string;
+  post: string;
+  generalfiles: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface AuthState {
