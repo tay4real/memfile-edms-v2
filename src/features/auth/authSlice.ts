@@ -34,7 +34,7 @@ export const loginUser = createAsyncThunk(
       return response.data.user;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || error.message || 'Login failed'
+        'Username or Password is incorrect. Please try again.'
       );
     }
   }
@@ -60,19 +60,50 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action: PayloadAction<User>) => {
-      (state.isLoggedIn = true),
-        ((state.user = action.payload), (state.error = null));
+      state.isLoggedIn = true;
+      state.user = action.payload;
+      state.error = null;
     },
     loginFail: (state) => {
-      (state.isLoggedIn = false),
-        ((state.user = null), (state.error = 'Login failed'));
+      state.isLoggedIn = false;
+      state.user = null;
+      state.error = 'Login failed';
     },
     logout: (state) => {
-      (state.isLoggedIn = false), ((state.user = null), (state.error = null));
+      state.isLoggedIn = false;
+      state.user = null;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
+      // --- loginUser  handlers ---
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.isLoggedIn = true;
+        state.error = null;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.user = null;
+        state.isLoggedIn = false;
+      })
+
+      // Handle logout action
+      .addCase(logout, (state) => {
+        state.isLoggedIn = false;
+        state.user = null;
+        state.error = null;
+        localStorage.removeItem('accessToken'); // Clear token on logout
+      })
+
+      // --- fetchUser handlers ---
       .addCase(fetchUser.pending, (state) => {
         state.loading = true;
         state.error = null;

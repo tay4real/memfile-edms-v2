@@ -30,6 +30,7 @@ const Login = () => {
 
     const result = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(result)) {
+      console.log('Fulfilled');
       navigate('/dashboard'); // Change this route as needed
     }
   };
