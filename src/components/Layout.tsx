@@ -3,20 +3,16 @@ import { Outlet, useNavigate, NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
 import { RootState } from '../app/store';
-import {
-  Menu,
-  LayoutDashboard,
-  Building2,
-  UserCircle,
-  LogOut,
-} from 'lucide-react'; // Lucide icons
+import { Menu, LayoutDashboard, Building2, LogOut } from 'lucide-react';
+import clsx from 'clsx';
 
 const Layout: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -25,7 +21,13 @@ const Layout: React.FC = () => {
   };
 
   const toggleSidebar = () => {
-    setSidebarOpen((prev) => !prev);
+    if (window.innerWidth < 768) {
+      // mobile
+      setSidebarOpen(!sidebarOpen);
+    } else {
+      // desktop
+      setSidebarCollapsed(!sidebarCollapsed);
+    }
   };
 
   const navLinks = [
@@ -39,64 +41,87 @@ const Layout: React.FC = () => {
       label: 'New Department',
       icon: <Building2 size={20} />,
     },
-    // Add more links here as needed
   ];
 
   return (
-    <div className='min-h-screen flex'>
+    <div className='min-h-screen bg-gray-100 flex'>
       {/* Sidebar */}
       <aside
-        className={`${
-          sidebarOpen ? 'w-64' : 'w-20'
-        } bg-gray-800 text-white transition-all duration-300 ease-in-out overflow-hidden`}>
-        <div className='p-4 flex items-center space-x-2'>
-          <span className='text-2xl font-bold'>
-            {sidebarOpen ? 'Memfile EDMS' : 'M'}
+        className={clsx(
+          'bg-gray-800 text-white fixed md:relative z-40 transition-all duration-300 ease-in-out h-screen',
+          {
+            'w-64':
+              !sidebarCollapsed && sidebarOpen && window.innerWidth >= 768,
+            'w-20': sidebarCollapsed && window.innerWidth >= 768,
+            'w-64 md:w-64 absolute': sidebarOpen && window.innerWidth < 768,
+            '-translate-x-full md:translate-x-0':
+              !sidebarOpen && window.innerWidth < 768,
+          }
+        )}>
+        <div className='p-4 flex items-center space-x-2 border-b border-gray-700'>
+          <span className='text-2xl font-bold truncate'>
+            {sidebarCollapsed ? 'M' : 'Memfile EDMS'}
           </span>
         </div>
-        <nav className='space-y-2 mt-4'>
-          {navLinks.map(({ to, label, icon }) => (
+        <nav className='space-y-2 mt-4 px-2'>
+          {navLinks.map((link) => (
             <NavLink
-              key={to}
-              to={to}
+              key={link.to}
+              to={link.to}
               className={({ isActive }) =>
-                `flex items-center space-x-3 px-4 py-2 hover:bg-gray-700 ${
-                  isActive ? 'bg-gray-700' : ''
-                }`
+                clsx(
+                  'flex items-center gap-2 p-2 text-sm font-medium rounded hover:bg-gray-700 transition-colors',
+                  {
+                    'bg-gray-700': isActive,
+                  }
+                )
               }>
-              {icon}
-              {sidebarOpen && <span>{label}</span>}
+              {link.icon}
+              {!sidebarCollapsed && (
+                <span className='whitespace-nowrap'>{link.label}</span>
+              )}
             </NavLink>
           ))}
         </nav>
       </aside>
 
-      {/* Main Content */}
-      <div className='flex-1 flex flex-col'>
-        {/* Header */}
-        <header className='bg-white shadow p-4 flex justify-between items-center'>
-          <div className='flex items-center space-x-4'>
+      {/* Mobile Overlay */}
+      {sidebarOpen && window.innerWidth < 768 && (
+        <div
+          className='fixed inset-0 bg-black opacity-40 z-30 md:hidden'
+          onClick={() => setSidebarOpen(false)}></div>
+      )}
+
+      {/* Main content */}
+      <div
+        className={clsx(
+          'flex-1 flex flex-col transition-all duration-300 ease-in-out min-h-screen'
+        )}>
+        {/* Top Nav */}
+        <header className='bg-white shadow p-4 flex items-center justify-between sticky top-0 z-10'>
+          <div className='flex items-center gap-4'>
             <button
-              onClick={toggleSidebar}
-              className='text-gray-700 hover:text-black focus:outline-none'>
+              className='text-gray-700 hover:text-black focus:outline-none'
+              onClick={toggleSidebar}>
               <Menu size={24} />
             </button>
-            <span className='text-xl font-semibold'>Dashboard</span>
+            <h1 className='text-xl font-semibold hidden sm:block'>Dashboard</h1>
           </div>
-          <div className='flex items-center space-x-4'>
-            <UserCircle size={20} className='text-gray-600' />
-            <span className='text-gray-700'>Welcome, {user?.firstname}</span>
+          <div className='flex items-center gap-4'>
+            <span className='text-gray-700 hidden sm:inline'>
+              Welcome, <strong>{user?.firstname}</strong>
+            </span>
             <button
               onClick={handleLogout}
-              className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition flex items-center space-x-2'>
-              <LogOut size={16} />
-              <span>Logout</span>
+              className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition flex items-center gap-1'>
+              <LogOut size={18} />
+              <span className='hidden sm:inline'>Logout</span>
             </button>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className='p-4 bg-gray-100 flex-1'>
+        <main className='p-4'>
           <Outlet />
         </main>
       </div>
