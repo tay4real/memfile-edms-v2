@@ -3,9 +3,8 @@ export const logout = () => {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
 
-  // Optional: clear other user data
-  localStorage.removeItem('user');
-
-  // Redirect to LOgin page
-  window.location.href = '/login';
+  // redirect to login only if user is on a protected route
+  if (window.location.pathname !== '/login') {
+    window.location.href = '/login';
+  }
 };

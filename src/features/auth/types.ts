@@ -3,4 +3,5 @@ export interface User {
   deptName: string;
   deptShortName: string;
   mdaID?: string;
+  
 }

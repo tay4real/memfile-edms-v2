@@ -1,10 +1,10 @@
-import axios from 'axios';
 import { MDA } from '../features/mdas/types';
+import { fetchBackend } from './axios';
 
 export const fetchAllMDAsAPI = () => {
-  return axios.get(`localhost:4000/api/mdas`);
+  return fetchBackend.get(`http://localhost:4000/api/mdas`);
 };
 
 export const createMDAAPI = (mda: MDA) => {
-  return axios.post('localhost:4000/api/mdas', mda);
+  return fetchBackend.post('http://localhost:4000/api/mdas', mda);
 };

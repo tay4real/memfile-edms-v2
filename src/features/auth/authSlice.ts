@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { loginAPI, fetchCurrentUserAPI } from '../../services/authAPI';
 
+const userFromStorage = localStorage.getItem('user');
+const token = localStorage.getItem('accessToken');
+
 interface User {
   id: string;
   firstname: string;
@@ -16,13 +19,15 @@ interface User {
 interface AuthState {
   isLoggedIn: boolean;
   user: User | null;
+  accessToken: string | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: AuthState = {
   isLoggedIn: false,
-  user: null,
+  user: userFromStorage ? JSON.parse(userFromStorage) : null,
+  accessToken: token || null,
   loading: false,
   error: null,
 };
@@ -34,10 +39,14 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await loginAPI(credentials);
 
-      // Save token to localStorage
-      localStorage.setItem('accessToken', response.data.token);
+      const { accessToken, refreshToken, user } = response.data;
 
-      return response.data.user;
+      // Save token to localStorage
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      return user;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
         'Username or Password is incorrect. Please try again.'
@@ -61,6 +70,8 @@ export const fetchUser = createAsyncThunk(
   }
 );
 
+
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -79,6 +90,26 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.user = null;
       state.error = null;
+      state.accessToken = null;
+      localStorage.removeItem('user');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    },
+    setUser: (
+      state,
+      action: PayloadAction<{ user: User; accessToken: string }>
+    ) => {
+      state.isLoggedIn = true;
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
+
+      // Persist to localStorage
+      localStorage.setItem('user', JSON.stringify(action.payload.user));
+      localStorage.setItem('accessToken', action.payload.accessToken);
+    },
+    setAccessToken: (state, action: PayloadAction<string>) => {
+      state.accessToken = action.payload;
+      localStorage.setItem('accessToken', action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -128,5 +159,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess, loginFail, logout } = authSlice.actions;
+export const { loginSuccess, loginFail, logout, setUser } = authSlice.actions;
 export default authSlice.reducer;

@@ -32,26 +32,36 @@ fetchBackend.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // if token expired and we have'nt retried already
+    // Token expired - try refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
+        if (!refreshToken) {
+          throw new Error('Missing refresh token');
+        }
+
         const { data } = await axios.post(`${baseURL}/auth/refresh-token`, {
           token: refreshToken,
         });
 
         localStorage.setItem('accessToken', data.accessToken);
 
-        // Attach new token and retry the original request
+        // Retry the original request
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return fetchBackend(originalRequest);
-      } catch (refreshError) {
-        console.log('Token refresh failed', refreshError);
-        logout(); // if refresh fails, log user out
+      } catch (refreshError: any) {
+        console.error(
+          '🔴 Token refresh failed:',
+          refreshError?.response?.data || refreshError.message
+        );
+
+        // Optional: Show user-friendly message or redirect
+        logout(); // ⛔ Logout only if really necessary
       }
     }
+
     return Promise.reject(error);
   }
 );

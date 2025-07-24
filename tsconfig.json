@@ -7,12 +7,12 @@
     "strict": true,
     "jsx": "react-jsx",
     "esModuleInterop": true,
+    "types": ["node"],
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": "./",
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@types/*": ["src/types/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src"],

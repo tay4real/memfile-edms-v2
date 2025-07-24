@@ -8,10 +8,13 @@ import ProtectedRoute from './ProtectedRoute';
 const Login = lazy(() => import('../features/auth/Login'));
 const Page404 = lazy(() => import('../components/Page404')); // You can move it to components or features
 const DefaultLayout = lazy(() => import('../components/Layout')); // Layout component
-const Dashboard = lazy(() => import('../pages/Dashboard')); // Example dashboard component
+const Dashboard = lazy(() => import('../pages/Dashboard'));
+
+const NewMDA = lazy(() => import('../features/mdas/pages/NewMDA'));
+
 const NewDepartment = lazy(
   () => import('../features/departments/pages/NewDepartment')
-); // Example department component
+);
 
 const AppRoutes = () => {
   return (
@@ -28,6 +31,7 @@ const AppRoutes = () => {
           }>
           {/* Nested routes under Layout */}
           <Route path='dashboard' element={<Dashboard />} />
+          <Route path='mdas/create' element={<NewMDA />} />
           <Route path='department/new' element={<NewDepartment />} />
         </Route>
         {/* Catch-all route for 404 */}

@@ -7,6 +7,7 @@ const initialState: MDAState = {
   mda: null,
   loading: false,
   error: null,
+  successMessage: null,
 };
 
 // Thunk to fetch all MDAs
@@ -70,6 +71,7 @@ const mdaSlice = createSlice({
         state.loading = false;
         state.mda = action.payload;
         state.mdas.push(action.payload);
+        state.successMessage = 'MDA created successfully';
       })
       .addCase(createMDA.rejected, (state, action) => {
         state.loading = false;

@@ -11,9 +11,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
 }: ProtectedRouteProps) => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const token = useSelector((state: RootState) => state.auth.accessToken);
   const location = useLocation();
 
-  if (!isLoggedIn) {
+  if (!isLoggedIn || !token) {
     // Store the current location the user is trying to access
     return <Navigate to={'/login'} replace state={{ from: location }} />;
   }

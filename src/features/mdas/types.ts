@@ -9,4 +9,5 @@ export interface MDAState {
   mda: MDA | null;
   loading: boolean;
   error: string | null;
+  successMessage?: string | null;
 }
