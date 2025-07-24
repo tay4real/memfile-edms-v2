@@ -3,16 +3,35 @@ import { Outlet, useNavigate, NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
 import { RootState } from '../app/store';
-import { Menu, LayoutDashboard, Building2, LogOut } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Building2,
+  Landmark,
+  FolderOpen,
+  User2,
+  Mail,
+  Send,
+  FileText,
+  FilePlus,
+  Users,
+  Settings2,
+  FileCheck2,
+  FileCog,
+  LogOut,
+  Menu,
+} from 'lucide-react';
 import clsx from 'clsx';
 
 const Layout: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
+  const userRole = user?.role || 'User';
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
   const handleLogout = () => {
     dispatch(logout());
@@ -30,16 +49,152 @@ const Layout: React.FC = () => {
     }
   };
 
+  const toggleMenu = (label: string) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
+  };
+
   const navLinks = [
     {
       to: '/dashboard',
       label: 'Dashboard',
       icon: <LayoutDashboard size={20} />,
+      roles: ['Admin', 'Registry Officer', 'User'],
     },
     {
-      to: '/departments/new',
-      label: 'New Department',
+      label: 'MDAs',
+      icon: <Landmark size={20} />,
+      roles: ['Admin'],
+      children: [
+        {
+          to: '/mdas',
+          label: 'All MDAs',
+          icon: <Landmark size={18} />,
+          roles: ['Admin'],
+        },
+        {
+          to: '/mdas/create',
+          label: 'Create MDA',
+          icon: <FilePlus size={18} />,
+          roles: ['Admin'],
+        },
+      ],
+    },
+    {
+      label: 'Departments',
       icon: <Building2 size={20} />,
+      roles: ['Admin', 'Registry Officer'],
+      children: [
+        {
+          to: '/departments',
+          label: 'All Departments',
+          icon: <Building2 size={18} />,
+          roles: ['Admin', 'Registry Officer'],
+        },
+        {
+          to: '/departments/create',
+          label: 'Create Department',
+          icon: <FilePlus size={18} />,
+          roles: ['Admin'],
+        },
+      ],
+    },
+    {
+      label: 'General Files',
+      icon: <FolderOpen size={20} />,
+      roles: ['Admin', 'Registry Officer'],
+      children: [
+        {
+          to: '/general-files',
+          label: 'All General Files',
+          icon: <FileText size={18} />,
+          roles: ['Admin', 'Registry Officer'],
+        },
+        {
+          to: '/general-files/create',
+          label: 'Add General File',
+          icon: <FilePlus size={18} />,
+          roles: ['Admin', 'Registry Officer'],
+        },
+      ],
+    },
+    {
+      label: 'User Management',
+      icon: <Users size={20} />,
+      roles: ['Admin'],
+      children: [
+        {
+          to: '/users',
+          label: 'All Users',
+          icon: <User2 size={18} />,
+          roles: ['Admin'],
+        },
+        {
+          to: '/users/create',
+          label: 'Add User',
+          icon: <FilePlus size={18} />,
+          roles: ['Admin'],
+        },
+      ],
+    },
+    {
+      label: 'Incoming Mails',
+      icon: <Mail size={20} />,
+      roles: ['Admin', 'Registry Officer'],
+      children: [
+        {
+          to: '/incoming-mails',
+          label: 'All Incoming Mails',
+          icon: <Mail size={18} />,
+          roles: ['Admin', 'Registry Officer'],
+        },
+        {
+          to: '/incoming-mails/create',
+          label: 'Add Incoming Mail',
+          icon: <FilePlus size={18} />,
+          roles: ['Admin', 'Registry Officer'],
+        },
+      ],
+    },
+    {
+      label: 'Outgoing Mails',
+      icon: <Send size={20} />,
+      roles: ['Admin', 'Registry Officer'],
+      children: [
+        {
+          to: '/outgoing-mails',
+          label: 'All Outgoing Mails',
+          icon: <Send size={18} />,
+          roles: ['Admin', 'Registry Officer'],
+        },
+        {
+          to: '/outgoing-mails/create',
+          label: 'Add Outgoing Mail',
+          icon: <FilePlus size={18} />,
+          roles: ['Admin', 'Registry Officer'],
+        },
+      ],
+    },
+    {
+      label: 'File Management',
+      icon: <FileText size={20} />,
+      roles: ['Admin', 'Registry Officer', 'User'],
+      children: [
+        {
+          to: '/files/desk-files',
+          label: 'File at Desk',
+          icon: <FileCheck2 size={18} />,
+          roles: ['Admin', 'Registry Officer', 'User'],
+        },
+        {
+          to: '/files/file-operations',
+          label: 'File Operations',
+          icon: <FileCog size={18} />,
+          roles: ['Admin', 'Registry Officer', 'User'],
+        },
+      ],
     },
   ];
 
@@ -64,24 +219,73 @@ const Layout: React.FC = () => {
           </span>
         </div>
         <nav className='space-y-2 mt-4 px-2'>
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              className={({ isActive }) =>
-                clsx(
-                  'flex items-center gap-2 p-2 text-sm font-medium rounded hover:bg-gray-700 transition-colors',
-                  {
-                    'bg-gray-700': isActive,
-                  }
-                )
-              }>
-              {link.icon}
-              {!sidebarCollapsed && (
-                <span className='whitespace-nowrap'>{link.label}</span>
-              )}
-            </NavLink>
-          ))}
+          {navLinks
+            .filter((link) => link.roles?.includes(userRole))
+            .map((link) =>
+              link.children ? (
+                <div key={link.label}>
+                  <button
+                    className='w-full flex items-center justify-between p-2 text-sm font-medium text-left hover:bg-gray-700 rounded transition'
+                    onClick={() => toggleMenu(link.label)}>
+                    <div className='flex items-center gap-2'>
+                      {link.icon}
+                      {!sidebarCollapsed && <span>{link.label}</span>}
+                    </div>
+                    {!sidebarCollapsed && (
+                      <svg
+                        className={clsx('w-4 h-4 transition-transform', {
+                          'rotate-90': openMenus[link.label],
+                        })}
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M9 5l7 7-7 7'
+                        />
+                      </svg>
+                    )}
+                  </button>
+                  {/* Dropdown items */}
+                  {openMenus[link.label] && !sidebarCollapsed && (
+                    <div className='ml-6 space-y-1'>
+                      {link.children.map((child) => (
+                        <NavLink
+                          key={child.to}
+                          to={child.to}
+                          className={({ isActive }) =>
+                            clsx(
+                              'block text-sm text-gray-300 hover:text-white hover:bg-gray-700 rounded px-2 py-1',
+                              {
+                                'bg-gray-700 text-white': isActive,
+                              }
+                            )
+                          }>
+                          {child.label}
+                        </NavLink>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  className={({ isActive }) =>
+                    clsx(
+                      'flex items-center gap-2 p-2 text-sm font-medium rounded hover:bg-gray-700 transition',
+                      {
+                        'bg-gray-700': isActive,
+                      }
+                    )
+                  }>
+                  {link.icon}
+                  {!sidebarCollapsed && <span>{link.label}</span>}
+                </NavLink>
+              )
+            )}
         </nav>
       </aside>
 
