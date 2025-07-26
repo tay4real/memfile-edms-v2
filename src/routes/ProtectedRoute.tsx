@@ -1,23 +1,22 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
-import { RootState } from 'src/app/store';
+import { RootState } from '../app/store';
 
-interface ProtectedRouteProps {
+interface Props {
   children: ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  children,
-}: ProtectedRouteProps) => {
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const token = useSelector((state: RootState) => state.auth.accessToken);
+const ProtectedRoute = ({ children }: Props) => {
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
 
-  if (!isLoggedIn || !token) {
-    // Store the current location the user is trying to access
-    return <Navigate to={'/login'} replace state={{ from: location }} />;
+  if (!isLoggedIn) {
+    // Redirect unauthenticated users to login, preserving the location
+    return <Navigate to='/login' state={{ from: location }} replace />;
   }
+
+  // If authenticated, render the protected content
   return <>{children}</>;
 };
 

@@ -1,12 +1,11 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../app/store';
 import { loginUser } from './authSlice';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
 
   const { loading, error, isLoggedIn } = useSelector(
     (state: RootState) => state.auth
@@ -20,6 +19,10 @@ const Login = () => {
     setFormError('');
   };
 
+  if (isLoggedIn) {
+    return <Navigate to='/dashboard' replace />;
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -30,7 +33,7 @@ const Login = () => {
 
     const result = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(result)) {
-      navigate('/dashboard', { replace: true }); // Redirect to dashboard on successful login
+      console.log('Login successful:', result.payload);
     }
   };
 

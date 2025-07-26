@@ -25,7 +25,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  isLoggedIn: false,
+  isLoggedIn: !!token && !!userFromStorage,
   user: userFromStorage ? JSON.parse(userFromStorage) : null,
   accessToken: token || null,
   loading: false,
@@ -69,8 +69,6 @@ export const fetchUser = createAsyncThunk(
     }
   }
 );
-
-
 
 const authSlice = createSlice({
   name: 'auth',
@@ -131,15 +129,6 @@ const authSlice = createSlice({
         state.user = null;
         state.isLoggedIn = false;
       })
-
-      // Handle logout action
-      .addCase(logout, (state) => {
-        state.isLoggedIn = false;
-        state.user = null;
-        state.error = null;
-        localStorage.removeItem('accessToken'); // Clear token on logout
-      })
-
       // --- fetchUser handlers ---
       .addCase(fetchUser.pending, (state) => {
         state.loading = true;
