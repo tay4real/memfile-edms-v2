@@ -12,6 +12,7 @@ const NewMDA = lazy(() => import('../features/mdas/pages/NewMDA'));
 const NewDepartment = lazy(
   () => import('../features/departments/pages/NewDepartment')
 );
+const MDAsList = lazy(() => import('../features/mdas/pages/MDAsList'));
 
 const AppRoutes = () => {
   return (
@@ -26,6 +27,14 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='mdas'
+            element={
+              <ProtectedRoute>
+                <MDAsList />
               </ProtectedRoute>
             }
           />

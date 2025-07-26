@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/app/store';
-import { createMDA } from '@/features/mdas/mdaSlice';
+import { clearMDAState, createMDA } from '@/features/mdas/mdaSlice';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,6 +38,17 @@ const NewMDA: React.FC = () => {
     reset();
   };
 
+  // Automatically clear messages after 3 seconds
+  useEffect(() => {
+    if (successMessage || error) {
+      const timer = setTimeout(() => {
+        dispatch(clearMDAState());
+      }, 3000); // 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, error, dispatch]);
+
   return (
     <div className='p-4 max-w-xl mx-auto'>
       <Card>
@@ -52,19 +63,25 @@ const NewMDA: React.FC = () => {
             </Alert>
           )}
           {errors.shortName && (
-            <Alert variant='destructive' className='mb-4'>
+            <Alert
+              variant='destructive'
+              className='mb-4 border-red-400 bg-red-100 text-red-800'>
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{errors.shortName.message}</AlertDescription>
             </Alert>
           )}
           {error && (
-            <Alert variant='destructive' className='mb-4'>
+            <Alert
+              variant='destructive'
+              className='mb-4 border-red-400 bg-red-100 text-red-800'>
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
           {successMessage && (
-            <Alert variant='default' className='mb-4'>
+            <Alert
+              variant='default'
+              className='mb-4 border-green-400 bg-green-100 text-green-800'>
               <AlertDescription>{successMessage}</AlertDescription>
             </Alert>
           )}

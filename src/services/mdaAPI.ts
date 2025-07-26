@@ -2,9 +2,13 @@ import { MDA } from '../features/mdas/types';
 import { fetchBackend } from './axios';
 
 export const fetchAllMDAsAPI = () => {
-  return fetchBackend.get(`http://localhost:4000/api/mdas`);
+  return fetchBackend.get(`/mdas`);
 };
 
 export const createMDAAPI = (mda: MDA) => {
-  return fetchBackend.post('http://localhost:4000/api/mdas', mda);
+  return fetchBackend.post('/mdas', mda);
+};
+
+export const deleteMDAAPI = (id: string) => {
+  return fetchBackend.delete(`/mdas/${id}`);
 };

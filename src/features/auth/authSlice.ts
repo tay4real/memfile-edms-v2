@@ -48,9 +48,12 @@ export const loginUser = createAsyncThunk(
 
       return user;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(
-        'Username or Password is incorrect. Please try again.'
-      );
+      const message =
+        error.response?.data || error.message || 'An unexpected error occurred';
+      return thunkAPI.rejectWithValue(message);
+      // return thunkAPI.rejectWithValue(
+      //   'Username or Password is incorrect. Please try again.'
+      // );
     }
   }
 );
