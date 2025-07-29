@@ -7,6 +7,7 @@ const initialState: DeptState = {
   dept: null,
   loading: false,
   error: null,
+  successMessage: null,
 };
 
 // Async thunk to fetch departments
@@ -17,7 +18,9 @@ export const fetchAllDepts = createAsyncThunk(
       const response = await fetchDeptsAPI(mdaID);
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message);
+      const message =
+        error.response?.data || error.message || 'An unexpected error occurred';
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -30,7 +33,9 @@ export const createDept = createAsyncThunk(
       const response = await createDeptAPI(mdaID, dept);
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message);
+      const message =
+        error.response?.data || error.message || 'An unexpected error occurred';
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -42,6 +47,7 @@ const deptSlice = createSlice({
     clearDeptState(state) {
       state.dept = null;
       state.error = null;
+      state.successMessage = null;
     },
   },
   extraReducers: (builder) => {
@@ -72,6 +78,10 @@ const deptSlice = createSlice({
         (state, action: PayloadAction<Department>) => {
           state.loading = false;
           state.dept = action.payload;
+          state.depts = state.depts
+            ? [...state.depts, action.payload]
+            : [action.payload];
+          state.successMessage = 'Department created successfully';
         }
       )
       .addCase(createDept.rejected, (state, action) => {

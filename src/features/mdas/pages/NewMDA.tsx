@@ -65,7 +65,9 @@ const NewMDA: React.FC = () => {
         </CardHeader>
         <CardContent>
           {errors.name && (
-            <Alert variant='destructive' className='mb-4'>
+            <Alert
+              variant='destructive'
+              className='mb-4 border-red-400 bg-red-100 text-red-800'>
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{errors.name.message}</AlertDescription>
             </Alert>

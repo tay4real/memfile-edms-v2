@@ -1,5 +1,5 @@
 export interface Department {
-  _id: string;
+  _id?: string;
   deptName: string;
   deptShortName: string;
   mdaID?: string;
@@ -10,4 +10,5 @@ export interface DeptState {
   dept: Department | null;
   loading: boolean;
   error?: string | null;
+  successMessage?: string | null;
 }

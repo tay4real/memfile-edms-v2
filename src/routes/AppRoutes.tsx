@@ -57,7 +57,7 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path='department/new'
+            path='departments/create'
             element={
               <ProtectedRoute>
                 <NewDepartment />
