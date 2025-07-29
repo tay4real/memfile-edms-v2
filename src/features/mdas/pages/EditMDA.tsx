@@ -92,7 +92,9 @@ const EditMDA: React.FC = () => {
         </CardHeader>
         <CardContent>
           {error && (
-            <Alert variant='destructive' className='mb-4'>
+            <Alert
+              variant='destructive'
+              className='mb-4 border-red-400 bg-red-100 text-red-800'>
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -100,11 +102,11 @@ const EditMDA: React.FC = () => {
           {successMessage && (
             <Alert
               variant='default'
-              className='mb-4 text-green-600 border-green-300'>
+              className='b-4 border-green-400 bg-green-100 text-green-800'>
               <AlertDescription>{successMessage}</AlertDescription>
             </Alert>
           )}
-          <form onSubmit={handleSubmit} className='space-y-4'>
+          <form onSubmit={handleSubmit} className='space-y-4 mt-4'>
             <div className='space-y-2'>
               <Label htmlFor='name'>Name</Label>
               <Input

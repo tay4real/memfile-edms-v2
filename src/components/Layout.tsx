@@ -203,7 +203,7 @@ const Layout: React.FC = () => {
       {/* Sidebar */}
       <aside
         className={clsx(
-          'bg-gray-800 text-white fixed md:relative z-40 transition-all duration-300 ease-in-out h-screen',
+          'bg-gray-800 text-white fixed md:relative z-40 transition-all duration-300 ease-in-out h-width-full',
           {
             'w-64':
               !sidebarCollapsed && sidebarOpen && window.innerWidth >= 768,
