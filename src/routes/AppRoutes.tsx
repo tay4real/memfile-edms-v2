@@ -14,6 +14,8 @@ const NewDepartment = lazy(
 );
 const MDAsList = lazy(() => import('../features/mdas/pages/MDAsList'));
 
+const EditMDA = lazy(() => import('../features/mdas/pages/EditMDA'));
+
 const AppRoutes = () => {
   return (
     <Suspense fallback={<Spinner />}>
@@ -43,6 +45,14 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute>
                 <NewMDA />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='mdas/edit/:id'
+            element={
+              <ProtectedRoute>
+                <EditMDA />
               </ProtectedRoute>
             }
           />

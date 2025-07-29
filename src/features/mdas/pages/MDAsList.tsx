@@ -5,6 +5,7 @@ import { fetchAllMDAs, deleteMDA } from '@/features/mdas/mdaSlice';
 import { Link } from 'react-router-dom';
 import DeleteModal from '@/components/DeleteModal';
 import Spinner from '@/components/Spinner';
+import Breadcrumb, { BreadcrumbItem } from '@/components/Breadcrumb';
 
 const MDAsList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,6 +16,24 @@ const MDAsList = () => {
     id: '',
     name: '',
   });
+
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { label: 'Home', path: '/' },
+    { label: 'MDAs' }, // No path since this is the current page
+  ];
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = mdas.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(mdas.length / itemsPerPage);
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
 
   useEffect(() => {
     dispatch(fetchAllMDAs());
@@ -39,6 +58,7 @@ const MDAsList = () => {
 
   return (
     <div className='p-6 bg-white rounded-lg shadow-md'>
+      <Breadcrumb items={breadcrumbItems} />
       <div className='mb-4 flex justify-between items-center'>
         <h2 className='text-xl font-semibold text-gray-800'>All MDAs</h2>
         <Link
@@ -57,7 +77,7 @@ const MDAsList = () => {
           </tr>
         </thead>
         <tbody>
-          {mdas.map((mda) => (
+          {currentItems.map((mda) => (
             <tr key={mda._id} className='border-t'>
               <td className='p-2 border'>{mda.name}</td>
               <td className='p-2 border'>{mda.shortName}</td>
@@ -77,6 +97,34 @@ const MDAsList = () => {
           ))}
         </tbody>
       </table>
+      <div className='mt-4 flex justify-center items-center gap-2'>
+        <button
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className='px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50'>
+          Prev
+        </button>
+
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i + 1}
+            onClick={() => goToPage(i + 1)}
+            className={`px-3 py-1 rounded ${
+              currentPage === i + 1
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 hover:bg-gray-300'
+            }`}>
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className='px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50'>
+          Next
+        </button>
+      </div>
 
       <DeleteModal
         show={showDeleteModal}

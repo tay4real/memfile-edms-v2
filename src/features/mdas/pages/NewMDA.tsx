@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Breadcrumb, { BreadcrumbItem } from '@/components/Breadcrumb';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -23,6 +24,12 @@ const NewMDA: React.FC = () => {
   const { successMessage, error } = useSelector(
     (state: RootState) => state.mdas
   );
+
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { label: 'Home', path: '/' },
+    { label: 'MDAs', path: '/mdas' },
+    { label: 'Create MDA' }, // last item has no path
+  ];
 
   const {
     register,
@@ -51,6 +58,7 @@ const NewMDA: React.FC = () => {
 
   return (
     <div className='p-4 max-w-xl mx-auto'>
+      <Breadcrumb items={breadcrumbItems} />
       <Card>
         <CardHeader>
           <CardTitle>Add New MDA</CardTitle>
