@@ -10,7 +10,7 @@ The original MemFile frontend was developed with React.js and supported by an Ex
 
 ## Background
 
-MemFile was originally conceived to automate manual administrative and registry processes within the State Information Technology Agency (SITA).
+MemFile was conceived to automate manual administrative and registry processes within the State Information Technology Agency (SITA).
 
 The system was designed around common registry and correspondence workflows, including:
 
@@ -30,7 +30,7 @@ This repository represents the next stage of that project: a **TypeScript/React 
 
 ## Why V2?
 
-The original frontend codebase had become outdated, creating a need to modernize the application rather than continue extending the deprecated implementation.
+The original frontend codebase had become outdated, creating a need to modernize the application rather than continue extending the older implementation.
 
 The v2 project provides an opportunity to:
 
@@ -45,88 +45,19 @@ This project is therefore not simply a new application; it is an exercise in **m
 
 ---
 
-## Architecture
-
-The MemFile project is structured around a separate frontend and backend.
-
-### Frontend
-
-**MemFile EDMS v2**
-
-- React
-- TypeScript
-  
-
-### Backend
-
-The original MemFile backend was developed separately using:
-
-- Node.js
-- Express.js
-- MongoDB
-
-The backend is maintained separately from this v2 frontend.
-
----
-
-## Key Features
-
-The MemFile system is designed to support administrative records and file-management workflows including:
-
-### Incoming Correspondence
-
-Register and organize incoming mails, memos and correspondence for structured record keeping and retrieval.
-
-### Outgoing Correspondence
-
-Manage outgoing mails and correspondence while maintaining an electronic record of the transaction.
-
-### File Requests
-
-Allow authorized users to request files required for administrative activities.
-
-### File Charging
-
-Support the movement of files between offices while maintaining information about where files have been charged.
-
-### File Actions & Comments
-
-Provide a mechanism for recording comments and actions required on files as they move through administrative processes.
-
-### Records Retrieval
-
-Digitizing correspondence and file-management activities provides a structured approach to retrieving previously filed records.
-
----
-
-## Technology Stack
-
-| Layer | Technology |
-|---|---|
-| Frontend | React |
-| Language | TypeScript |
-| Backend | Node.js / Express.js |
-| Database | MongoDB  |
-| API | REST API |
-| Development |  |
-
-> **Note:** The backend is maintained separately from this repository.
-
----
-
 ## Project Evolution
 
 ```text
 2021
   │
-  ├── Original MemFile frontend
+  ├── Original MemFile Frontend
   │     React.js
   │
-  ├── MemFile backend
-  │     Node.js + Express.js API
+  ├── MemFile Backend API
+  │     Node.js + Express.js
   │
   ▼
-Frontend codebase becomes outdated
+Original frontend becomes outdated
   │
   ▼
 MemFile EDMS v2
