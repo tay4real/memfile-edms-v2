@@ -55,7 +55,7 @@ The MemFile project is structured around a separate frontend and backend.
 
 - React
 - TypeScript
-- [Add other libraries actually used in this repository]
+  
 
 ### Backend
 
@@ -63,7 +63,7 @@ The original MemFile backend was developed separately using:
 
 - Node.js
 - Express.js
-- [Add database/API technologies actually used by the backend]
+- MongoDB
 
 The backend is maintained separately from this v2 frontend.
 
@@ -106,9 +106,9 @@ Digitizing correspondence and file-management activities provides a structured a
 | Frontend | React |
 | Language | TypeScript |
 | Backend | Node.js / Express.js |
-| Database | [Add actual database] |
+| Database | MongoDB  |
 | API | REST API |
-| Development | [Add actual tools if relevant] |
+| Development |  |
 
 > **Note:** The backend is maintained separately from this repository.
 
